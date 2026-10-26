@@ -260,13 +260,12 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               onDragLeave={() => setIsDragOver(false)}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-[8px] p-6 text-center cursor-pointer transition-all ${
-                isDragOver
+              className={`border-2 border-dashed rounded-[8px] p-6 text-center cursor-pointer transition-all ${isDragOver
                   ? 'border-[#0070f3] bg-[#0070f3]/5'
                   : selectedFile
-                  ? 'border-emerald-400 bg-emerald-50/20'
-                  : 'border-[#ebebeb] hover:border-[#171717] bg-[#fafafa]'
-              }`}
+                    ? 'border-emerald-400 bg-emerald-50/20'
+                    : 'border-[#ebebeb] hover:border-[#171717] bg-[#fafafa]'
+                }`}
             >
               <input
                 ref={fileInputRef}

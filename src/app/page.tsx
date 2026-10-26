@@ -531,9 +531,7 @@ export default function HomePage() {
             <p className="body-md text-xs text-[#4d4d4d] leading-relaxed mb-3">
               “{DHRITAM_COMPANY.meaning}” • {DHRITAM_COMPANY.tagline}
             </p>
-            <p className="text-[11px] text-[#8f8f8f] font-mono leading-relaxed">
-              Kavach X Daily-Wear Physiological Sensing Ecosystem. Recipient of MeitY GENESIS EiR 3.0 & MSME Best AI Innovation Prize.
-            </p>
+
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
@@ -618,9 +616,7 @@ export default function HomePage() {
 
         <div className="max-w-[1280px] mx-auto mt-8 pt-6 border-t border-[#ebebeb] flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#8f8f8f] font-mono">
           <span>© 2026 Dhritam HealthTech. All rights reserved.</span>
-          <span className="mt-2 sm:mt-0">
-            Strictly built according to DESIGN.md (Vercel Geist System).
-          </span>
+
         </div>
       </footer>
 

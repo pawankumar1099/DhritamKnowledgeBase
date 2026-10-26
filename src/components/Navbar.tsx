@@ -19,8 +19,12 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Wordmark */}
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-[6px] bg-[#171717] flex items-center justify-center text-white font-semibold text-sm shadow-sm select-none">
-            धृ
+          <div className="w-8 h-8 rounded-[6px] overflow-hidden bg-white border border-[#ebebeb] flex items-center justify-center shadow-xs select-none p-1">
+            <img
+              src="/logo.avif"
+              alt="Dhritam Logo"
+              className="w-full h-full object-contain"
+            />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
