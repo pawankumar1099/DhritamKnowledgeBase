@@ -86,6 +86,27 @@ export function getStoredDocuments(): KnowledgeDocument[] {
   }
 }
 
+export function saveAllDocumentsLocally(docs: KnowledgeDocument[]): void {
+  if (typeof window === 'undefined') return;
+  try {
+    const cleaned = docs.map((d) => {
+      if (d.fileDataUrl && d.fileDataUrl.startsWith('data:')) {
+        return { ...d, fileDataUrl: undefined };
+      }
+      return d;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
+  } catch (e) {
+    console.warn('Storage quota notice in saveAllDocumentsLocally, stripping all preview URLs:', e);
+    try {
+      const stripped = docs.map((d) => ({ ...d, fileDataUrl: undefined, textContent: undefined }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stripped));
+    } catch {
+      // quota full, ignore
+    }
+  }
+}
+
 export function saveDocumentLocally(
   doc: KnowledgeDocument,
   fileDataUrl?: string
@@ -94,22 +115,34 @@ export function saveDocumentLocally(
   const existingIdx = docs.findIndex((d) => d.id === doc.id);
   let updatedDocs: KnowledgeDocument[];
 
+  const cleanDoc = { ...doc };
+  if (cleanDoc.fileDataUrl && cleanDoc.fileDataUrl.startsWith('data:')) {
+    cleanDoc.fileDataUrl = undefined;
+  }
+
   if (existingIdx >= 0) {
     updatedDocs = [...docs];
-    updatedDocs[existingIdx] = { ...doc, updatedAt: new Date().toISOString() };
+    updatedDocs[existingIdx] = { ...cleanDoc, updatedAt: new Date().toISOString() };
   } else {
-    updatedDocs = [doc, ...docs];
+    updatedDocs = [cleanDoc, ...docs];
   }
 
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedDocs));
+    const serialized = updatedDocs.map((d) => {
+      if (d.fileDataUrl && d.fileDataUrl.startsWith('data:')) {
+        return { ...d, fileDataUrl: undefined };
+      }
+      return d;
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
   } catch (e) {
-    console.error('Storage quota exceeded, storing without embedded preview', e);
-    // Strip large dataUrl from localstorage if quota exceeded, rely on IndexedDB
-    const strippedDocs = updatedDocs.map((d) =>
-      d.id === doc.id ? { ...d, fileDataUrl: undefined } : d
-    );
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(strippedDocs));
+    console.warn('Storage quota exceeded, storing metadata only', e);
+    const strippedDocs = updatedDocs.map((d) => ({ ...d, fileDataUrl: undefined }));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(strippedDocs));
+    } catch {
+      // ignore
+    }
   }
 
   if (fileDataUrl) {

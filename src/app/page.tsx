@@ -11,6 +11,7 @@ import {
 import {
   getStoredDocuments,
   saveDocumentLocally,
+  saveAllDocumentsLocally,
   deleteDocumentLocally,
   toggleStarLocally,
   incrementViewCountLocally,
@@ -135,6 +136,7 @@ export default function HomePage() {
           });
           const merged = Array.from(map.values());
           setDocuments(merged);
+          saveAllDocumentsLocally(merged);
         }
       } catch (err) {
         console.warn('Could not sync with Firestore, using local data', err);
@@ -241,32 +243,51 @@ export default function HomePage() {
   ]);
 
   const handleDocumentUploaded = (doc: KnowledgeDocument, fileDataUrl?: string) => {
-    const updated = saveDocumentLocally(doc, fileDataUrl);
-    setDocuments(updated);
+    saveDocumentLocally(doc, fileDataUrl);
+    setDocuments((prevDocs) => {
+      const exists = prevDocs.some((d) => d.id === doc.id);
+      const nextDocs = exists
+        ? prevDocs.map((d) => (d.id === doc.id ? doc : d))
+        : [doc, ...prevDocs];
+      saveAllDocumentsLocally(nextDocs);
+      return nextDocs;
+    });
+
+    if (selectedCategory !== 'all' && selectedCategory !== doc.category) {
+      setSelectedCategory('all');
+    }
+    if (searchQuery.trim()) {
+      setSearchQuery('');
+    }
+
     showToast(`"${doc.title}" saved & indexed successfully!`);
   };
 
   const handlePreviewDocument = async (doc: KnowledgeDocument) => {
     setSelectedDoc(doc);
     setIsViewerOpen(true);
-    const updated = incrementViewCountLocally(doc.id);
-    setDocuments(updated);
+    incrementViewCountLocally(doc.id);
+    const newCount = (doc.viewCount || 0) + 1;
+    setDocuments((prev) => {
+      const nextDocs = prev.map((d) => (d.id === doc.id ? { ...d, viewCount: newCount } : d));
+      saveAllDocumentsLocally(nextDocs);
+      return nextDocs;
+    });
     if (isFirebaseConfigured()) {
-      const target = updated.find((d) => d.id === doc.id);
-      if (target) {
-        await updateDocumentInFirestore(doc.id, { viewCount: target.viewCount });
-      }
+      await updateDocumentInFirestore(doc.id, { viewCount: newCount });
     }
   };
 
   const handleDownloadDocument = async (doc: KnowledgeDocument) => {
-    const updated = incrementDownloadCountLocally(doc.id);
-    setDocuments(updated);
+    incrementDownloadCountLocally(doc.id);
+    const newCount = (doc.downloadCount || 0) + 1;
+    setDocuments((prev) => {
+      const nextDocs = prev.map((d) => (d.id === doc.id ? { ...d, downloadCount: newCount } : d));
+      saveAllDocumentsLocally(nextDocs);
+      return nextDocs;
+    });
     if (isFirebaseConfigured()) {
-      const target = updated.find((d) => d.id === doc.id);
-      if (target) {
-        await updateDocumentInFirestore(doc.id, { downloadCount: target.downloadCount });
-      }
+      await updateDocumentInFirestore(doc.id, { downloadCount: newCount });
     }
 
     // If data URL exists (Cloudinary, Firebase Storage, or DataURL)
@@ -325,14 +346,22 @@ export default function HomePage() {
   };
 
   const handleToggleStar = async (id: string) => {
-    const updated = toggleStarLocally(id);
-    setDocuments(updated);
+    toggleStarLocally(id);
+    let newStarred = false;
+    setDocuments((prev) => {
+      const nextDocs = prev.map((d) => {
+        if (d.id === id) {
+          newStarred = !d.starred;
+          return { ...d, starred: newStarred };
+        }
+        return d;
+      });
+      saveAllDocumentsLocally(nextDocs);
+      return nextDocs;
+    });
     setSelectedDoc((prev) => (prev && prev.id === id ? { ...prev, starred: !prev.starred } : prev));
     if (isFirebaseConfigured()) {
-      const target = updated.find((d) => d.id === id);
-      if (target) {
-        await updateDocumentInFirestore(id, { starred: target.starred });
-      }
+      await updateDocumentInFirestore(id, { starred: newStarred });
     }
   };
 
@@ -340,8 +369,12 @@ export default function HomePage() {
     const doc = documents.find((d) => d.id === id);
     if (!doc) return;
     if (confirm(`Are you sure you want to delete "${doc.title}" from the knowledge base?`)) {
-      const updated = deleteDocumentLocally(id);
-      setDocuments(updated);
+      deleteDocumentLocally(id);
+      setDocuments((prev) => {
+        const nextDocs = prev.filter((d) => d.id !== id);
+        saveAllDocumentsLocally(nextDocs);
+        return nextDocs;
+      });
       if (isFirebaseConfigured()) {
         await deleteDocumentFromFirestore(id);
       }
