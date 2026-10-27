@@ -32,14 +32,14 @@ export const DocumentTable: React.FC<DocumentTableProps> = ({
         <table className="w-full text-left border-collapse text-xs">
           <thead>
             <tr className="bg-[#fafafa] border-b border-[#ebebeb] text-[#8f8f8f] font-mono text-[11px] uppercase tracking-wider">
-              <th className="py-3 px-4 font-medium w-8 text-center">★</th>
-              <th className="py-3 px-4 font-medium">Document Title & Filename</th>
-              <th className="py-3 px-4 font-medium">Category</th>
-              <th className="py-3 px-4 font-medium">Classification</th>
-              <th className="py-3 px-4 font-medium">Format / Size</th>
-              <th className="py-3 px-4 font-medium">Author</th>
-              <th className="py-3 px-4 font-medium">Updated</th>
-              <th className="py-3 px-4 font-medium text-right">Actions</th>
+              <th className="py-3 px-3 sm:px-4 font-medium w-8 text-center">★</th>
+              <th className="py-3 px-3 sm:px-4 font-medium">Document Title & Filename</th>
+              <th className="py-3 px-4 font-medium hidden sm:table-cell">Category</th>
+              <th className="py-3 px-4 font-medium hidden md:table-cell">Classification</th>
+              <th className="py-3 px-3 sm:px-4 font-medium">Format / Size</th>
+              <th className="py-3 px-4 font-medium hidden lg:table-cell">Author</th>
+              <th className="py-3 px-4 font-medium hidden sm:table-cell">Updated</th>
+              <th className="py-3 px-3 sm:px-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#ebebeb]">
@@ -62,7 +62,7 @@ export const DocumentTable: React.FC<DocumentTableProps> = ({
                   onClick={() => onPreview(doc)}
                 >
                   <td
-                    className="py-3 px-4 text-center"
+                    className="py-3 px-3 sm:px-4 text-center shrink-0"
                     onClick={(e) => {
                       e.stopPropagation();
                       onToggleStar(doc.id);
@@ -77,22 +77,22 @@ export const DocumentTable: React.FC<DocumentTableProps> = ({
                     />
                   </td>
 
-                  <td className="py-3 px-4 max-w-sm">
-                    <div className="font-semibold text-[#171717] hover:text-[#0070f3] truncate tracking-tight text-[13px]">
+                  <td className="py-3 px-3 sm:px-4 max-w-[140px] xs:max-w-[190px] sm:max-w-xs md:max-w-sm min-w-0">
+                    <div className="font-semibold text-[#171717] hover:text-[#0070f3] truncate tracking-tight text-[12px] sm:text-[13px]" title={doc.title}>
                       {doc.title}
                     </div>
-                    <div className="text-[11px] text-[#8f8f8f] font-mono truncate mt-0.5">
+                    <div className="text-[10px] sm:text-[11px] text-[#8f8f8f] font-mono truncate mt-0.5" title={doc.originalFileName}>
                       {doc.originalFileName}
                     </div>
                   </td>
 
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 hidden sm:table-cell">
                     <span className="mono-eyebrow text-[10px] px-2 py-0.5 rounded-[4px] bg-[#fafafa] border border-[#ebebeb] text-[#4d4d4d]">
                       {doc.category}
                     </span>
                   </td>
 
-                  <td className="py-3 px-4">
+                  <td className="py-3 px-4 hidden md:table-cell">
                     <span
                       className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-[4px] border text-[10px] font-mono font-medium ${classification.bg}`}
                     >
@@ -101,7 +101,7 @@ export const DocumentTable: React.FC<DocumentTableProps> = ({
                     </span>
                   </td>
 
-                  <td className="py-3 px-4 font-mono text-[11px] text-[#4d4d4d]">
+                  <td className="py-3 px-3 sm:px-4 font-mono text-[11px] text-[#4d4d4d] whitespace-nowrap">
                     <div className="flex items-center gap-1.5">
                       <span
                         className={`px-1.5 py-0.2 rounded border text-[9px] font-semibold ${formatBadge.bg}`}
@@ -112,11 +112,11 @@ export const DocumentTable: React.FC<DocumentTableProps> = ({
                     </div>
                   </td>
 
-                  <td className="py-3 px-4 text-[#4d4d4d] font-medium truncate max-w-[140px]">
+                  <td className="py-3 px-4 text-[#4d4d4d] font-medium truncate max-w-[140px] hidden lg:table-cell">
                     {doc.author || 'Dhritam Team'}
                   </td>
 
-                  <td className="py-3 px-4 text-[#8f8f8f] font-mono text-[11px] whitespace-nowrap">
+                  <td className="py-3 px-4 text-[#8f8f8f] font-mono text-[11px] whitespace-nowrap hidden sm:table-cell">
                     {formatRelativeTime(doc.updatedAt)}
                   </td>
 

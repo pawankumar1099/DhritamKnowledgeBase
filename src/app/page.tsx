@@ -362,9 +362,9 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col bg-[#fafafa]">
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 floating-elevated px-4 py-2.5 rounded-[6px] bg-[#171717] text-white text-xs font-medium flex items-center gap-2 shadow-lg animate-in slide-in-from-bottom duration-150">
-          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span>{toastMessage}</span>
+        <div className="fixed bottom-4 sm:bottom-6 left-4 right-4 sm:left-auto sm:right-6 z-50 floating-elevated px-4 py-2.5 rounded-[6px] bg-[#171717] text-white text-xs font-medium flex items-center gap-2 shadow-lg animate-in slide-in-from-bottom duration-150 max-w-sm sm:max-w-md">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
+          <span className="truncate" title={toastMessage}>{toastMessage}</span>
         </div>
       )}
 

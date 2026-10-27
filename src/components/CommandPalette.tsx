@@ -137,24 +137,25 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                       onClose();
                       onSelectDocument(doc);
                     }}
-                    className="w-full flex items-center justify-between px-3 py-2 rounded-[6px] hover:bg-[#fafafa] text-left cursor-pointer group"
+                    className="w-full flex items-center justify-between px-3 py-2 rounded-[6px] hover:bg-[#fafafa] text-left cursor-pointer group gap-2"
                   >
-                    <div className="flex items-center gap-2.5 truncate max-w-md">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
                       <span
-                        className={`text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border ${badge.bg}`}
+                        className={`text-[9px] font-mono font-semibold px-1.5 py-0.2 rounded border shrink-0 ${badge.bg}`}
                       >
                         {badge.label}
                       </span>
-                      <div className="truncate">
-                        <div className="font-medium text-[#171717] truncate group-hover:text-[#0070f3]">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-medium text-[#171717] truncate group-hover:text-[#0070f3]" title={doc.title}>
                           {doc.title}
                         </div>
-                        <div className="text-[10px] text-[#8f8f8f] font-mono truncate">
-                          {doc.originalFileName} • {doc.author}
+                        <div className="text-[10px] text-[#8f8f8f] font-mono truncate flex items-center gap-1.5" title={doc.originalFileName}>
+                          <span className="truncate">{doc.originalFileName}</span>
+                          <span className="shrink-0">• {doc.author}</span>
                         </div>
                       </div>
                     </div>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#8f8f8f] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#8f8f8f] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </button>
                 );
               })}

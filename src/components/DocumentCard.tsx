@@ -91,9 +91,23 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
         </div>
 
         {/* Title (Geist heading-md tracking -0.4px) */}
-        <h3 className="text-[16px] font-semibold text-[#171717] tracking-[-0.4px] line-clamp-2 leading-snug mb-2 group-hover:text-[#0070f3] transition-colors">
+        <h3
+          className="text-[16px] font-semibold text-[#171717] tracking-[-0.4px] line-clamp-2 leading-snug mb-1.5 group-hover:text-[#0070f3] transition-colors break-words [overflow-wrap:anywhere]"
+          title={document.title}
+        >
           {document.title}
         </h3>
+
+        {/* Filename sub-line */}
+        {document.originalFileName && (
+          <div
+            className="text-[11px] text-[#8f8f8f] font-mono truncate mb-2.5 flex items-center gap-1.5 min-w-0"
+            title={document.originalFileName}
+          >
+            <FileText className="w-3 h-3 shrink-0 text-[#8f8f8f]" />
+            <span className="truncate">{document.originalFileName}</span>
+          </div>
+        )}
 
         {/* Description Snippet */}
         <p className="body-md text-xs text-[#4d4d4d] line-clamp-3 mb-4 leading-relaxed">
@@ -122,14 +136,14 @@ export const DocumentCard: React.FC<DocumentCardProps> = ({
 
       <div>
         {/* Metadata Footer: Author, Size, Date */}
-        <div className="pt-3 border-t border-[#ebebeb] flex items-center justify-between text-xs text-[#8f8f8f] mb-3">
-          <div className="flex items-center gap-1.5 truncate max-w-[180px]">
+        <div className="pt-3 border-t border-[#ebebeb] flex items-center justify-between text-xs text-[#8f8f8f] mb-3 gap-2">
+          <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-1">
             <div className="w-4 h-4 rounded-full bg-[#171717] text-white text-[9px] font-medium flex items-center justify-center shrink-0">
               {(document.author || 'D').charAt(0).toUpperCase()}
             </div>
             <span className="truncate text-[#4d4d4d] font-medium">{document.author || 'Dhritam Team'}</span>
           </div>
-          <div className="flex items-center gap-2 font-mono text-[11px]">
+          <div className="flex items-center gap-2 font-mono text-[11px] shrink-0">
             <span>{formatBytes(document.fileSize)}</span>
             <span>•</span>
             <span title={formatDate(document.updatedAt)}>

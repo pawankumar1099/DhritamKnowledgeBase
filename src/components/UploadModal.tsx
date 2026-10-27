@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   DhritamCategory,
   ClassificationLevel,
@@ -54,13 +54,41 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const resetForm = useCallback(() => {
+    setSelectedFile(null);
+    setTitle('');
+    setCategory('hardware');
+    setTopicTags('');
+    setAuthor(TEAM_MEMBERS[0]);
+    setClassification('internal');
+    setVersion('v1.0');
+    setDescription('');
+    setError(null);
+    setIsDragOver(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }, []);
+
+  // Whenever modal opens, guarantee a clean blank form slate
+  useEffect(() => {
+    if (isOpen) {
+      resetForm();
+    }
+  }, [isOpen, resetForm]);
+
   if (!isOpen) return null;
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
 
   const handleFileSelection = (file: File) => {
     setSelectedFile(file);
     setError(null);
-    if (!title) {
-      // Clean title from filename
+    // Auto-fill title only if blank or previously auto-generated
+    if (!title.trim()) {
       const clean = file.name
         .replace(/\.[^/.]+$/, '')
         .replace(/[_-]/g, ' ')
@@ -203,6 +231,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
       }
 
       onDocumentUploaded(newDoc, fileDataUrl);
+      resetForm();
       onClose();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error uploading file';
@@ -213,26 +242,26 @@ export const UploadModal: React.FC<UploadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/40 backdrop-blur-xs">
       <div className="floating-elevated w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-[12px] bg-white animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-[#ebebeb] sticky top-0 bg-white/95 backdrop-blur-xs z-10">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-[6px] bg-[#171717] text-white flex items-center justify-center">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-[#ebebeb] sticky top-0 bg-white/95 backdrop-blur-xs z-10">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1 mr-2">
+            <div className="w-8 h-8 rounded-[6px] bg-[#171717] text-white flex items-center justify-center shrink-0">
               <UploadCloud className="w-4 h-4" />
             </div>
-            <div>
-              <h2 className="heading-md text-[17px] text-[#171717] font-semibold">
+            <div className="min-w-0">
+              <h2 className="heading-md text-[16px] sm:text-[17px] text-[#171717] font-semibold truncate">
                 Upload to Knowledge Base
               </h2>
-              <p className="mono-eyebrow text-[10px] text-[#8f8f8f]">
+              <p className="mono-eyebrow text-[10px] text-[#8f8f8f] truncate">
                 ANY FORMAT // PDF, DOCX, MD, CODE, IMAGE, DATA
               </p>
             </div>
           </div>
           <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-[6px] border border-[#ebebeb] hover:bg-[#fafafa] flex items-center justify-center text-[#8f8f8f] hover:text-[#171717] transition-all cursor-pointer"
+            onClick={handleClose}
+            className="w-8 h-8 rounded-[6px] border border-[#ebebeb] hover:bg-[#fafafa] flex items-center justify-center text-[#8f8f8f] hover:text-[#171717] transition-all cursor-pointer shrink-0"
           >
             <X className="w-4 h-4" />
           </button>
@@ -279,19 +308,19 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               />
 
               {selectedFile ? (
-                <div className="flex items-center justify-center gap-3 text-left">
-                  <div className="w-10 h-10 rounded-[6px] bg-white border border-[#ebebeb] flex items-center justify-center text-[#0070f3]">
+                <div className="flex items-center gap-3 text-left w-full min-w-0">
+                  <div className="w-10 h-10 rounded-[6px] bg-white border border-[#ebebeb] flex items-center justify-center text-[#0070f3] shrink-0">
                     <File className="w-5 h-5" />
                   </div>
-                  <div>
-                    <div className="text-xs font-semibold text-[#171717] truncate max-w-xs">
+                  <div className="min-w-0 flex-1">
+                    <div className="text-xs font-semibold text-[#171717] truncate" title={selectedFile.name}>
                       {selectedFile.name}
                     </div>
-                    <div className="text-[11px] text-[#8f8f8f] font-mono mt-0.5">
+                    <div className="text-[11px] text-[#8f8f8f] font-mono mt-0.5 truncate">
                       {formatBytes(selectedFile.size)} • {selectedFile.type || 'Custom file'}
                     </div>
                   </div>
-                  <span className="mono-eyebrow text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded ml-2">
+                  <span className="mono-eyebrow text-[10px] text-emerald-600 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded shrink-0">
                     READY
                   </span>
                 </div>
@@ -428,7 +457,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           <div className="pt-3 border-t border-[#ebebeb] flex items-center justify-end gap-2.5">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               disabled={isSubmitting}
               className="btn-ghost-sm h-8.5 px-4 cursor-pointer"
             >

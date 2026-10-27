@@ -16,6 +16,22 @@ export const metadata: Metadata = {
   title: "Dhritam — Company & Product Knowledge Base",
   description:
     "Unified engineering, clinical, strategic, and regulatory document management for Kavach X daily-wear physiological sensing.",
+  icons: {
+    icon: "/logo.avif",
+  },
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'none',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({

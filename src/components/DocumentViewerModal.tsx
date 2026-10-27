@@ -84,27 +84,31 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/50 backdrop-blur-xs">
       <div className="floating-elevated w-full max-w-4xl h-[88vh] flex flex-col rounded-[12px] bg-white overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         {/* Top Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-[#ebebeb] bg-[#fafafa]">
-          <div className="flex items-center gap-3 truncate max-w-xl">
+        <div className="flex items-center justify-between px-3 sm:px-5 py-3 border-b border-[#ebebeb] bg-[#fafafa] gap-2">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1 mr-2">
             <span
               className={`mono-eyebrow px-2 py-0.5 rounded-[4px] border text-[10px] font-semibold shrink-0 ${formatBadge.bg}`}
             >
               {formatBadge.label}
             </span>
-            <div className="truncate">
-              <h2 className="text-sm font-semibold text-[#171717] truncate tracking-tight">
+            <div className="min-w-0 flex-1">
+              <h2 className="text-xs sm:text-sm font-semibold text-[#171717] truncate tracking-tight" title={document.title}>
                 {document.title}
               </h2>
-              <div className="text-[11px] text-[#8f8f8f] font-mono truncate">
-                {document.originalFileName} • {formatBytes(document.fileSize)} • {document.version}
+              <div className="text-[10px] sm:text-[11px] text-[#8f8f8f] font-mono truncate flex items-center gap-1.5" title={document.originalFileName}>
+                <span className="truncate">{document.originalFileName}</span>
+                <span className="shrink-0">•</span>
+                <span className="shrink-0">{formatBytes(document.fileSize)}</span>
+                <span className="shrink-0 hidden sm:inline">•</span>
+                <span className="shrink-0 hidden sm:inline">{document.version}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               onClick={() => onToggleStar(document.id)}
-              className={`h-8 px-2.5 rounded-[6px] border flex items-center gap-1.5 transition-all cursor-pointer ${
+              className={`h-8 px-2 sm:px-2.5 rounded-[6px] border flex items-center gap-1.5 transition-all cursor-pointer ${
                 document.starred
                   ? 'bg-amber-50 border-amber-300 text-amber-600 shadow-xs'
                   : 'bg-white border-[#ebebeb] hover:bg-[#fafafa] text-[#8f8f8f] hover:text-amber-500'
@@ -112,17 +116,17 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
               title={document.starred ? 'Remove Bookmark' : 'Bookmark Document'}
             >
               <Star
-                className={`w-3.5 h-3.5 ${
+                className={`w-3.5 h-3.5 shrink-0 ${
                   document.starred ? 'fill-amber-400 text-amber-500' : ''
                 }`}
               />
-              <span className="text-xs font-medium">
+              <span className="text-xs font-medium hidden sm:inline">
                 {document.starred ? 'Bookmarked' : 'Bookmark'}
               </span>
             </button>
             <button
               onClick={() => onDownload(document)}
-              className="btn-primary-sm h-8 cursor-pointer"
+              className="btn-primary-sm h-8 px-2.5 sm:px-3 cursor-pointer shrink-0"
               title="Download file"
             >
               <Download className="w-3.5 h-3.5" />
@@ -130,7 +134,7 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-[6px] border border-[#ebebeb] bg-white hover:bg-[#fafafa] flex items-center justify-center text-[#8f8f8f] hover:text-[#171717] transition-all cursor-pointer"
+              className="w-8 h-8 rounded-[6px] border border-[#ebebeb] bg-white hover:bg-[#fafafa] flex items-center justify-center text-[#8f8f8f] hover:text-[#171717] transition-all cursor-pointer shrink-0"
             >
               <X className="w-4 h-4" />
             </button>
@@ -181,13 +185,14 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                 document.format === 'text' ||
                 document.format === 'code') && (
                 <div className="bg-white border border-[#ebebeb] rounded-[8px] p-6 shadow-xs">
-                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#ebebeb]">
-                    <div className="mono-eyebrow text-[11px] text-[#8f8f8f]">
-                      PARSED FILE PREVIEW // {document.originalFileName}
+                  <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#ebebeb] gap-2">
+                    <div className="mono-eyebrow text-[11px] text-[#8f8f8f] min-w-0 flex-1 truncate flex items-center gap-1.5" title={document.originalFileName}>
+                      <span className="shrink-0">PARSED FILE PREVIEW //</span>
+                      <span className="truncate font-mono">{document.originalFileName}</span>
                     </div>
                     <button
                       onClick={handleCopyContent}
-                      className="btn-ghost-sm h-7 text-xs flex items-center gap-1.5"
+                      className="btn-ghost-sm h-7 text-xs flex items-center gap-1.5 shrink-0"
                     >
                       {copied ? (
                         <>
@@ -226,7 +231,7 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                       <p className="text-sm font-medium text-[#171717]">
                         Image Asset Indexed
                       </p>
-                      <p className="text-xs text-[#8f8f8f] mt-1 font-mono">
+                      <p className="text-xs text-[#8f8f8f] mt-1 font-mono break-all max-w-full px-2" title={document.originalFileName}>
                         {document.originalFileName} ({formatBytes(document.fileSize)})
                       </p>
                       <button
@@ -248,11 +253,10 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                     <div className="flex flex-col gap-3">
                       {/* PDF Action Toolbar */}
                       <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#ebebeb]">
-                        <div className="flex items-center gap-2">
-                          <span className="mono-eyebrow text-[11px] text-[#4d4d4d] flex items-center gap-1.5 font-medium">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            INTERACTIVE PDF VIEWER // {document.originalFileName}
-                          </span>
+                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+                          <span className="mono-eyebrow text-[11px] text-[#4d4d4d] shrink-0 font-medium">INTERACTIVE PDF VIEWER //</span>
+                          <span className="mono-eyebrow text-[11px] text-[#4d4d4d] truncate font-medium" title={document.originalFileName}>{document.originalFileName}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <a
@@ -323,10 +327,11 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                   {resolvedFileUrl && resolvedFileUrl.startsWith('http') ? (
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#ebebeb]">
-                        <span className="mono-eyebrow text-[11px] text-[#4d4d4d] flex items-center gap-1.5 font-medium">
-                          <span className="w-2 h-2 rounded-full bg-[#0070f3] animate-pulse" />
-                          DOCUMENT PREVIEW // {document.originalFileName}
-                        </span>
+                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                          <span className="w-2 h-2 rounded-full bg-[#0070f3] animate-pulse shrink-0" />
+                          <span className="mono-eyebrow text-[11px] text-[#4d4d4d] shrink-0 font-medium">DOCUMENT PREVIEW //</span>
+                          <span className="mono-eyebrow text-[11px] text-[#4d4d4d] truncate font-medium" title={document.originalFileName}>{document.originalFileName}</span>
+                        </div>
                         <div className="flex items-center gap-2">
                           <a
                             href={resolvedFileUrl}
@@ -360,11 +365,11 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                       <div className="w-16 h-16 rounded-[8px] bg-[#fafafa] border border-[#ebebeb] flex items-center justify-center text-[#171717] mb-4">
                         <FolderOpen className="w-8 h-8 text-[#0070f3]" />
                       </div>
-                      <h4 className="text-lg font-semibold text-[#171717] mb-1 tracking-tight">
+                      <h4 className="text-base sm:text-lg font-semibold text-[#171717] mb-1 tracking-tight break-words max-w-full text-center" title={document.title}>
                         {document.title}
                       </h4>
-                      <p className="text-xs text-[#8f8f8f] font-mono mb-6">
-                        {document.originalFileName} • {formatBytes(document.fileSize)} • Format: {document.format.toUpperCase()}
+                      <p className="text-xs text-[#8f8f8f] font-mono mb-6 break-all max-w-full px-2 text-center">
+                        <span title={document.originalFileName}>{document.originalFileName}</span> • {formatBytes(document.fileSize)} • Format: {document.format.toUpperCase()}
                       </p>
 
                       <div className="w-full max-w-lg bg-[#fafafa] border border-[#ebebeb] rounded-[8px] p-4 text-xs text-left mb-6 space-y-2">
@@ -418,9 +423,9 @@ export const DocumentViewerModal: React.FC<DocumentViewerModalProps> = ({
                   <span className="text-[#8f8f8f] font-mono">Document ID</span>
                   <span className="col-span-2 font-mono text-[#171717]">{document.id}</span>
                 </div>
-                <div className="grid grid-cols-3 py-2 border-b border-[#ebebeb]">
+                <div className="grid grid-cols-1 sm:grid-cols-3 py-2 border-b border-[#ebebeb] gap-1 sm:gap-0">
                   <span className="text-[#8f8f8f] font-mono">Original Filename</span>
-                  <span className="col-span-2 font-mono text-[#171717]">{document.originalFileName}</span>
+                  <span className="sm:col-span-2 font-mono text-[#171717] break-all select-all text-xs" title={document.originalFileName}>{document.originalFileName}</span>
                 </div>
                 <div className="grid grid-cols-3 py-2 border-b border-[#ebebeb]">
                   <span className="text-[#8f8f8f] font-mono">File Size</span>

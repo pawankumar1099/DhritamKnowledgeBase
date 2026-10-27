@@ -17,12 +17,12 @@ export const DHRITAM_COMPANY = {
 export const TEAM_MEMBERS = [
   'Sahil Chaudhary',
   'Shubham Jain',
+  'Suhani Sikarwar',
   'Nikhil Singh',
   'Pawan Kumar Sharma',
   'Ritika Rawat',
-  'Suhani Sikarwar',
   'Yashashvi Chaudhary',
-  'Mayant Agarwal',
+  'Mayank Agarwal',
 ];
 
 export const CATEGORIES: CategoryMeta[] = [
